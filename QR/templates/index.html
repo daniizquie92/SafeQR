@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SafeQR</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.css">
+        <style>
+          table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+          }
+          
+          td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+          }
+          
+          tr:nth-child(even) {
+            background-color: #dddddd;
+          }
+          </style>
+      </head>
+      <body>
+        <p>Suba aqui su QR</p>
+
+        <form method="post" enctype="multipart/form-data" class="dropzone">
+          {{ form.hidden_tag() }}
+          {{ form.imagen }}
+          {% for error in form.imagen.errors %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
+          <input type="submit">
+        </form>
+
+        {% if result %}
+          <table>
+            <tr>
+              <th>
+                Resultado
+              </th>
+            </tr>
+            <tr>
+              <td>
+                {{ result.get("analisis") }}
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>
+                URL
+              </th>
+            </tr>
+            <tr>
+              <td>
+                {{ url }}
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>
+                Links potencialmente maliciosos
+              </th>
+            </tr>
+            {% for l in result.get("links_riesgo").split(",")%}
+              <tr>
+                <td>
+                  {{ l }}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+          <table>
+            <tr>
+              <th>
+                Archivos potencialmente maliciosos
+              </th>
+            </tr>
+            {% for l in result.get("archivos_riesgo").split(",")%}
+              <tr>
+                <td>
+                  {{ l }}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+          <table>
+            <tr>
+              <th>
+                IP
+              </th>
+            </tr>
+            <tr>
+              <td>
+                {{ result.get("ip") }}
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>
+                Host
+              </th>
+            </tr>
+            <tr>
+              <td>
+                {{ result.get("owner_name") }}
+              </td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <th>
+                Redireccion
+              </th>
+            </tr>
+            {% if result.get("misma_url") %}
+              <tr>
+                <td>
+                  La direccion de origen y destino es la misma
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td>
+                  Cuidado, la direccion de origen y destino es diferente
+                </td>
+              </tr>
+            {% endif %}
+          </table>
+          <table>
+            <tr>
+              <th>
+                Imagenes potencialmente maliciosas
+              </th>
+            </tr>
+            {% for l in result.get("imagenesSospechosas").split(",")%}
+              <tr>
+                <td>
+                  {{ l }}
+                </td>
+              </tr>
+            {% endfor %}
+        {% endif %}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+      </body>
+</html>
